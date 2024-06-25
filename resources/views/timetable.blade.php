@@ -1,27 +1,12 @@
 @extends('index')
 
 @section('content')
-    <div class="container mt-4">
-        <div class="row mb-3">
-            <div class="col">
-                <span><strong>Student ID:</strong> {{ session()->get('student_id') }}</span>
-            </div>
-            <div class="col">
-                <span><strong>Student Name:</strong> {{ session()->get('name') }}</span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <span><strong>Standard:</strong> {{ session()->get('std') }}</span>
-            </div>
-            <div class="col">
-                <span><strong>Division:</strong> {{ session()->get('dv') }}</span>
-            </div>
-        </div>
-    </div>
+
+{{-- file to show student details on top --}}
+@include('student_header')
 
     <div class="container mt-3">
-        <h3>Time Table</h3>
+        <h3 class="text-center">Time Table</h3>
         <table id="timetable" class="table table-bordered table-striped mt-3">
             <thead>
                 <tr>
@@ -43,7 +28,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5">No records found.</td>
+                        <td colspan="5" class="text-center">No records found.</td>
                     </tr>
                 @endforelse
             </tbody>
