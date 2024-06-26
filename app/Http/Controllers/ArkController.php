@@ -14,16 +14,59 @@ class ArkController extends Controller
 
     public function index()
     {
-        $standard = session()->get('std');
-        $division = session()->get('dv');
+        $std = session('std');
+        $dv = session('dv');
+        $branch_id = session('branch_id');
+        // dd($branch_id);
 
-        $timetable = DB::table('ark_timetable')
-                    ->where('standard', $standard)
-                    ->where('dv', $division)
-                    // ->get();
-                    ->paginate(50);
+        $academic_year = DB::table('ark_academic_year')->max('academic_year');
 
-        return view('timetable', compact('timetable'));
+        // Query to fetch periods based on branch_id, academic_year, std, and dv
+        $periodList = DB::select("
+                    SELECT DISTINCT a.period, b.stime, b.etime
+                    FROM ark_timetable a
+                    LEFT JOIN ark_period b
+                    ON b.branch_id = a.branch_id
+                    AND b.academic_year = a.academic_year
+                    AND b.standard = a.standard
+                    AND b.period = a.period
+                    WHERE a.branch_id = ?
+                    AND a.academic_year = ?
+                    AND a.standard = ?
+                    AND a.dv = ?
+                    ORDER BY a.period
+                ", [$branch_id, $academic_year, $std, $dv]);
+
+
+        $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        // Prepare data for each day and period
+        $timetableData = [];
+        foreach ($days as $day) {
+            $dayWisePeriods = [];
+            foreach ($periodList as $pl) {
+                $period = $pl->period;
+                $dayWiseSubjects = DB::table('ark_timetable')
+                    ->select(DB::raw('group_concat(sname) as sname'))
+                    ->where('period', $period)
+                    ->where('day', $day)
+                    ->where('branch_id', $branch_id)
+                    ->where('standard', $std)
+                    ->where('dv', $dv)
+                    ->where('academic_year', $academic_year)
+                    ->first();
+
+                $subjectNames = $dayWiseSubjects ? explode(",", $dayWiseSubjects->sname) : ['-'];
+                $dayWisePeriods[] = [
+                    'period' => $pl->period,
+                    'stime' => $pl->stime,
+                    'etime' => $pl->etime,
+                    'subjects' => $subjectNames,
+                ];
+            }
+            $timetableData[$day] = $dayWisePeriods;
+        }
+        return view('timetable', compact('std', 'dv', 'timetableData', 'periodList'));
     }
 
     public function login(Request $request)
@@ -47,7 +90,7 @@ class ArkController extends Controller
 
         if ($user) {
             if ($data['password'] === $user->password) {
-                session(['student_id' => $user->student_id, 'name' => $user->name]);
+                session(['student_id' => $user->student_id, 'name' => $user->name, 'branch_id' => $user->branch_id]);
 
                 $additionalData = DB::table('ark_students')
                     ->where('student_id', $data['student_id'])
@@ -59,10 +102,10 @@ class ArkController extends Controller
                 ]);
 
                 return response()->json(['message' => 'Logged in successfully', 'user' => $user], 201);
-            } else{
+            } else {
                 return response()->json(['error' => 'Incorrect password'], 422);
             }
-        } else{
+        } else {
             return response()->json(['error' => 'User not found with provided id'], 422);
         }
     }
@@ -112,6 +155,4 @@ class ArkController extends Controller
             ->update(['password' => $request->pass]);
         return response()->json(['message' => 'Password set successfully'], 200);
     }
-
-
 }

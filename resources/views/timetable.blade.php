@@ -2,40 +2,75 @@
 
 @section('content')
 
-{{-- file to show student details on top --}}
+{{-- File to show student details on top --}}
 @include('student_header')
 
-    <div class="container mt-3">
-        <h3 class="text-center">Time Table</h3>
-        <table id="timetable" class="table table-bordered table-striped mt-3">
-            <thead>
-                <tr>
-                    <th>Sl No.</th>
-                    <th>Period</th>
-                    <th>Day</th>
-                    <th>Subject</th>
-                    <th>Teacher</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($timetable as $time)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $time->period }}</td>
-                        <td>{{ $time->day }}</td>
-                        <td>{{ $time->sname }}</td>
-                        <td>{{ $time->teacher_name }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="text-center">No records found.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+<style>
+    .subjects{
+        font-size: 15px;
+    }
+</style>
 
-        @if ($timetable->total() > 0)
-            {{ $timetable->links('vendor.pagination.default') }}
-        @endif
+<div class="container mt-3">
+    {{-- <h3 class="text-center">Time Table</h3> --}}
+    <div class="card">
+        <div class="card-header text-center">
+            <h3 class="card-title">View Time table of standard {{ $std }} and division {{ $dv }}</h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            @if (count($timetableData) > 0)
+                <div>
+                    <table class="table table-bordered" style="border-collapse: collapse;">
+                        <thead class="text-center">
+                            <tr>
+                                <th>Day/<br>Period(Time)</th>
+                                @foreach ($periodList as $pl)
+                                    <th>{{ $pl->period }} <br> ({{ $pl->stime }} - <br> {{ $pl->etime }})</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            @foreach ($timetableData as $day => $dayData)
+                                <tr>
+                                    <th>{{ $day }}</th>
+                                    @foreach ($dayData as $periodData)
+                                        <td class="subjects">
+                                            @if (isset($periodData['subjects']) && count($periodData['subjects']) > 0)
+                                                @foreach ($periodData['subjects'] as $subject)
+                                                    {{ $subject }}<br>
+                                                @endforeach
+                                            @else
+                                                No subjects scheduled
+                                            @endif
+                                        </td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <p class="text-center">No timetable data available.</p>
+            @endif
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer clearfix text-center">
+            <button onclick="printDiv('printDiv')" class="btn btn-primary">Print</button>
+        </div>
     </div>
+</div>
+
 @endsection
+
+@push('scripts')
+    <script>
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+@endpush
