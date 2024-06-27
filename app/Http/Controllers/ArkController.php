@@ -66,7 +66,7 @@ class ArkController extends Controller
             }
             $timetableData[$day] = $dayWisePeriods;
         }
-        return view('timetable', compact('std', 'dv', 'timetableData', 'periodList'));
+        return view('timetable', compact('std', 'dv', 'timetableData', 'periodList', 'academic_year'));
     }
 
     public function login(Request $request)

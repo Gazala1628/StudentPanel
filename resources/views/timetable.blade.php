@@ -2,9 +2,6 @@
 
 @section('content')
 
-{{-- File to show student details on top --}}
-@include('student_header')
-
 <style>
     .subjects{
         font-size: 15px;
@@ -15,7 +12,10 @@
     {{-- <h3 class="text-center">Time Table</h3> --}}
     <div class="card">
         <div class="card-header text-center">
-            <h3 class="card-title">View Time table of standard {{ $std }} and division {{ $dv }}</h3>
+            <h4 class="card-title">View Time table of academic year {{ $academic_year }}</h4>
+            
+            {{-- File to show student details on top --}}
+            @include('student_header')
         </div>
         <!-- /.card-header -->
         <div class="card-body">

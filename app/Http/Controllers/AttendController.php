@@ -35,6 +35,6 @@ class AttendController extends Controller
             ->get();
 
         // Return the data to the attendTable view
-        return view('attendTable', compact('attendance'));
+        return view('attendTable', compact('attendance','request'));
     }
 }
