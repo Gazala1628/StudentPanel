@@ -6,14 +6,18 @@
          <h6><strong>Academic Year {{ session('academic_year') }}</strong></h6>
      </div>
 
+     <style>
+        .top-content{
+            background-color: #d9d9d9;
+        }
+    </style>
      <div class="container mt-3">
          <table border="1" style="border-collapse: collapse;" class="top-content table table-bordered">
              <tbody>
                  <tr>
                      <td><strong>Faculty Name:</strong> <span id="facultyName">{{ $fname }}</span></td>
-                     {{-- <td><strong>Academic Year:</strong> <span id="academicYear">{{ $academic_year }}</span></td> --}}
-                     <th><strong>Standard:</strong> <span id="standard">{{ $std }}</span></th>
-                     <th><strong>Division:</strong> <span id="division">{{ $dv }}</span></th>
+                     <th><strong>Standard:</strong> <span>{{ session('std') }}</span></th>
+                     <th><strong>Division:</strong> <span>{{ session('dv') }}</span></th>
                  </tr>
              </tbody>
          </table>
