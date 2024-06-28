@@ -1,13 +1,13 @@
 @extends('index')
 
 @section('content')
+    <div class="container">
+        <h4 class="text-center mb-4">Attendance from {{ $request->fdate }} to {{ $request->tdate }}</h4>
 
-{{-- file to show student details on top --}}
-@include('student_header')
+        {{-- file to show student details on top --}}
+        @include('student_header')
 
-    <div class="container mt-3">
-        <h3 class="text-center">Attendance</h3>
-        <table class="table table-striped table-bordered text-center mt-3">
+        <table class="table table-striped table-bordered text-center mt-4">
             <thead class="thead-dark">
                 <tr>
                     <th>Sl.no</th>
