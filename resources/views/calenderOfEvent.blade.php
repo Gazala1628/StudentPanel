@@ -1,16 +1,16 @@
 @extends('index')
 
 @section('content')
+    <div class="container text-center">
+        <h3>Calender of Event</h3>
+        <h6><strong>Academic Year {{ session('academic_year') }}</strong></h6>
+    </div>
 
-<div class="container text-center">
-    <h3>Calender of Event</h3> 
-    <h6><strong>Academic Year {{ session('academic_year') }}</strong></h6>
-</div>
-
-@include('eventheader')
+    @include('eventheader')
 
     <div class="container mt-3">
-        <table class="table table-bordered">
+
+        <table class="table table-striped table-bordered text-center mt-3">
             <thead>
                 <tr>
                     <th>Sl No</th>
@@ -33,7 +33,7 @@
                                     <i class="fa fa-download"></i>
                                 </a>
                             @else
-                                No file
+                                No records found.
                             @endif
                         </td>
                     </tr>
@@ -41,8 +41,4 @@
             </tbody>
         </table>
     </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    </script>
 @endsection
